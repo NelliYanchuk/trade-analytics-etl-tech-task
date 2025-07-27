@@ -15,7 +15,7 @@ FILE_MASK = os.getenv("FILE_MASK")
 POSTFIX = datetime.now().strftime("%Y%m%d")
 log_file = LOG_DIR / "extract.log"
 
-# if dirs exist
+# create dirs if not exist
 INPUT_DIR.mkdir(parents=True, exist_ok=True)
 LOG_DIR.mkdir(parents=True, exist_ok=True)
 LOCAL_OUTPUT_PATH.mkdir(parents=True, exist_ok=True)
