@@ -9,9 +9,11 @@ load_dotenv()
 INPUT_DIR = Path(os.getenv("INPUT_DIR"))
 OUTPUT_DIR = Path(os.getenv("OUTPUT_DIR"))
 LOG_DIR = Path(os.getenv("LOG_DIR"))
+
 FILE_MASK = os.getenv("FILE_MASK")
 REQUIRED_COLUMNS = [col.strip() for col in os.getenv("REQUIRED_COLUMNS").split(',')]
-log_file = LOG_DIR / "transform.log"
+TRANSFORM_LOGFILE = os.getenv("TRANSFORM_LOGFILE")
+log_file = LOG_DIR / TRANSFORM_LOGFILE
 
 # create dirs if not exist
 INPUT_DIR.mkdir(parents=True, exist_ok=True)

@@ -11,9 +11,11 @@ LOCAL_INPUT_PATH = Path(os.getenv("LOCAL_INPUT_PATH"))
 LOCAL_OUTPUT_PATH = Path(os.getenv("LOCAL_OUTPUT_PATH"))
 INPUT_DIR = Path(os.getenv("INPUT_DIR"))
 LOG_DIR = Path(os.getenv("LOG_DIR"))
+
 FILE_MASK = os.getenv("FILE_MASK")
 POSTFIX = datetime.now().strftime("%Y%m%d")
-log_file = LOG_DIR / "extract.log"
+EXTRACT_LOGFILE = os.getenv("EXTRACT_LOGFILE")
+log_file = LOG_DIR / EXTRACT_LOGFILE
 
 # create dirs if not exist
 INPUT_DIR.mkdir(parents=True, exist_ok=True)
