@@ -5,12 +5,37 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
+env:
+  LOCAL_INPUT_PATH: ./income_files
+  LOCAL_OUTPUT_PATH: ./archive_files
+  INPUT_DIR: ./input
+  OUTPUT_DIR: ./output
+  LOG_DIR: ./log
+  DB_DIR: ./db
+  FILE_MASK: trades*.csv
+  REQUIRED_COLUMNS: timestamp,user_id,client_type,symbol,side,quantity,price
+  EXTRACT_LOGFILE: extract.log
+  TRANSFORM_LOGFILE: transform.log
+  LOAD_LOGFILE: load.log
+  DB: agg_result.db
+  TABLE: agg_trades_weekly
+
 jobs:
   etl:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Ensure log directory exists
+        run:  |
+          mkdir -p ./archive_files
+          mkdir -p ./db
+          mkdir -p ./income_files
+          mkdir -p ./input
+          mkdir -p ./log
+          mkdir -p ./output
+
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -30,3 +55,15 @@ jobs:
 
       - name: Run load.py
         run: python etl/load.py
+
+      - name: Upload logs
+        uses: actions/upload-artifact@v4
+        with:
+          name: etl-logs
+          path: ./log/
+
+      - name: Upload DB
+        uses: actions/upload-artifact@v4
+        with:
+          name: etl-db
+          path: ./db/
