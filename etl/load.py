@@ -71,7 +71,6 @@ for _, row in success_files.iterrows():
         # logging
         with open(log_file, "a", encoding="utf-8") as logf:
             logf.write(f"{agg_file},success,{load_date}\n")
-        print(f"{agg_file} loaded")
     except Exception as e:
         log_error(agg_file, e, load_date)
         print(f"{agg_file} load fail with error: {e}")
