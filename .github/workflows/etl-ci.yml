@@ -35,6 +35,8 @@ jobs:
           mkdir -p ./input
           mkdir -p ./log
           mkdir -p ./output
+          mkdir -p ./report_scripts
+          mkdir -p ./reports
 
 
       - name: Set up Python
@@ -56,6 +58,9 @@ jobs:
       - name: Run load.py
         run: python etl/load.py
 
+      - name: Run top_3_bronze_report.py
+        run: python report_scripts/top_3_bronze_report.py
+
       - name: Upload logs
         uses: actions/upload-artifact@v4
         with:
@@ -67,3 +72,9 @@ jobs:
         with:
           name: etl-db
           path: ./db/
+
+      - name: Upload reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: result-reports
+          path: ./reports/
