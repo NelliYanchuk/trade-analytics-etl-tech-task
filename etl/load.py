@@ -24,10 +24,14 @@ LOG_DIR.mkdir(parents=True, exist_ok=True)
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 Path(DB_DIR).mkdir(parents=True, exist_ok=True)
 
-# logging fc
-def log_error(agg_file, error, load_date):
-    with open(log_file, "a", encoding="utf-8") as logf:
-        logf.write(f"{agg_file},fail,{error},{load_date}\n")
+def log_load(agg_filename, status, error, load_date):
+    header = "agg_filename,status,error,load_date\n"
+    write_header = not log_file.exists() or log_file.stat().st_size == 0
+    with open(log_file, "a", encoding="utf-8") as f:
+        if write_header:
+            f.write(header)
+        error_str = "" if not error else str(error).replace(",", ";").replace("\n", " ")
+        f.write(f"{agg_filename},{status},{error_str},{load_date}\n")
 
 # read transform log
 log_df = pd.read_csv(LOG_DIR / TRANSFORM_LOGFILE)
@@ -46,7 +50,7 @@ except Exception as e:
     print(f"DB connect error: {e}")
     for _, row in success_files.iterrows():
         agg_file = row["agg_filename"]
-        log_error(agg_file, e, load_date)
+        log_load(agg_file, "fail", e, load_date)
     sys.exit()
 
 # load each file
@@ -57,7 +61,7 @@ for _, row in success_files.iterrows():
 
     if not csv_path.exists():
         print(f"cant find {csv_path}, skipping")
-        log_error(agg_file, "file_not_found", load_date)
+        log_load(agg_file, "fail", "file_not_found", load_date)
         continue
 
     try:
@@ -68,11 +72,9 @@ for _, row in success_files.iterrows():
 
         df.to_sql(TABLE, con, if_exists='append', index=False)
         
-        # logging
-        with open(log_file, "a", encoding="utf-8") as logf:
-            logf.write(f"{agg_file},success,{load_date}\n")
+        log_load(agg_file, "success", "", load_date)
     except Exception as e:
-        log_error(agg_file, e, load_date)
+        log_load(agg_file, "fail", e, load_date)
         print(f"{agg_file} load fail with error: {e}")
 
 con.close()
