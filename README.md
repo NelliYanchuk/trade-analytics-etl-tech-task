@@ -17,7 +17,7 @@ This project implements an end-to-end ETL pipeline for processing client trading
 - [Development Process & Project Management](#development-process--project-management)
 - [ETL Pipeline Description](#etl-pipeline-description)
 - [Visualization & Reporting](#visualization--reporting)
-- [Scalability & Architecture](#scalability--architecture)
+- [Scalability & Architecture. Approach for 100+ Million Rows (AWS Cloud Example)](#scalability--architecture-approach-for-100-million-rows-aws-cloud-example)
 - [Author](#author)
 
 ---
@@ -255,18 +255,59 @@ main
 - **Power BI Dashboard**  
   - Example dashboard screenshot is available in the `images/` folder `whitebit_dashboard.png` or you can load and explore full Power BI dashboard from the `Top Client Report.pbix` file.  
 
-    <img src="images/whitebit_dashboard.png" width="50%">
+    <img src="images/whitebit_dashboard.png" width="80%">
 
 - **Top 3 Bronze Clients**  
   - The script generates `reports/top_clients.xlsx` with the top-3 bronze clients by `total_volume` and `total_pnl`.
 
 ---
 
-## Scalability & Architecture
+## Scalability & Architecture. Approach for 100+ Million Rows (AWS Cloud Example)
 
-**How to adapt for 100+ million rows**
+As an AWS Certified Cloud Practitioner (certified May 2025) with hands-on commercial experience in cloud infrastructure, here’s a recommended approach for building ETL processes capable of handling 100+ million rows:
+
+### Solution Adaptation for Large Data Volumes
+
+- **Data Warehouse:** Use Amazon Redshift as a scalable analytical DWH for storing and querying large datasets.
+- **ETL Processing:** Implement ETL pipelines using Matillion ETL or AWS Glue, optimized for parallel data loading and transformation.
+- **Staging & Raw Data:** Store incoming and intermediate data in Amazon S3, which efficiently manages large files and enables scalable data staging.
+
+### Technologies to Replace or Add
+
+- **Storage:**  
+  - Amazon S3 for raw/staging data  
+  - Amazon Redshift for processed/analytical data  
+  - Amazon RDS/PostgreSQL for transactional workloads
+- **ETL:**  
+  - Matillion ETL, AWS Glue, AWS Lambda for serverless transformation  
+  - Docker for containerized pipelines
+- **Monitoring:**  
+  - Amazon CloudWatch for logging and ETL metrics  
+  - AWS EventBridge for triggers and alerts
+- **Orchestration:**  
+  - Managed Workflows for AWS Step Functions or Apache Airflow
+
+### Example ETL Architecture
+
+1. Data is uploaded to Amazon S3.
+2. ETL processes (Matillion/AWS Glue/Lambda) pull data from S3, transform it, and load it into Redshift.
+3. Orchestration via Airflow or EventBridge, with monitoring and alerting via CloudWatch.
+4. Containerization with Docker for flexibility and portability.
 
 
+### Storage of Input and Output Data
+
+- **Input:** Amazon S3 bucket 
+- **Output:** Amazon Redshift for final tables and S3 buckets for archives/backup/intermediate results
+
+### Relevant Skills
+
+- AWS: S3, Redshift, Lambda, EC2, ECS, ECR, CloudWatch, EventBridge, Glue, RDS/PostgreSQL  
+- Python, Bash, Docker  
+- Matillion ETL  
+- SQL, DWH, Data Modeling  
+- Integration with JIRA, Bitbucket, Git  
+- Tools: Aginity Workbench, DBeaver, DataGrip
 
 ---
 
